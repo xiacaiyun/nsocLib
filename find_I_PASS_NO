@@ -1,0 +1,15 @@
+----try following sql to show missing range value from I_PASS_NO----
+SELECT 
+         CASE
+             WHEN I_PASS_NO + 1 = lead_no - 1 THEN TO_CHAR (I_PASS_NO +1)
+             ELSE TO_CHAR (I_PASS_NO + 1) || '-' || TO_CHAR (lead_no - 1)
+         END
+             Missing_track_no
+   FROM (SELECT I_PASS_NO,
+                    LEAD (I_PASS_NO, 1, NULL)
+                     OVER (ORDER BY I_PASS_NO ASC)
+                        lead_no
+             FROM ( select distinct I_PASS_NO from job_master order by I_PASS_NO ASC)
+             )
+   WHERE lead_no != I_PASS_NO + 1;
+
